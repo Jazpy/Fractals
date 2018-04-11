@@ -1,6 +1,6 @@
-# GENOMINATOR
+# OpenGL Fractals
 
-Genome visualizer in C++ with OpenGL. This will only render pretty things based on a genome, and is not intended for any serious use.
+A series of random fractals written in C++ using OpenGL.
 
 ## Prerequisites
 
