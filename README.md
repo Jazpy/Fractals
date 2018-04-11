@@ -15,4 +15,4 @@ Please check [this site](http://www.opengl-tutorial.org/) for instructions. You 
 
 ## Building
 
-Use the `CMakeLists.txt` file to generate a makefile inside the `build/` directory. I recommend using `cmake-gui` for this. Then simply use the `make` command. An executable named `genominator` should be generated.
+Use the `CMakeLists.txt` file to generate a makefile inside the `build/` directory. I recommend using `cmake-gui` for this. Then simply use the `make` command. An executable named `fractals` should be generated.

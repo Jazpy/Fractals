@@ -83,7 +83,7 @@ void GLFWSetup(GLFWwindow **window)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	*window = glfwCreateWindow(1024, 768, "GENOMINATOR", NULL, NULL);
+	*window = glfwCreateWindow(1024, 768, "Fractals", NULL, NULL);
 
 	if(*window == NULL)
 	{
