@@ -15,29 +15,27 @@ Tree::Tree(unsigned int iterations)
 {
 	// Create initial iteration data, this represents the
 	// tree's "trunk"
-	tree_iterations.push_back(vector<float>());
-
+	vector<float> trunk;
+	
 	// First point
-	tree_iterations[0].push_back(0.0f);
-	tree_iterations[0].push_back(0.0f);
-	tree_iterations[0].push_back(0.0f);
+	trunk.push_back(0.0f);
+	trunk.push_back(0.0f);
+	trunk.push_back(0.0f);
 	// Second point
-	tree_iterations[0].push_back(0.0f);
-	tree_iterations[0].push_back(10.0f);
-	tree_iterations[0].push_back(0.0f);
-
-	// Vector where all vertex data will be compacted
-	vector<float> vertex_buffer_data;
+	trunk.push_back(0.0f);
+	trunk.push_back(10.0f);
+	trunk.push_back(0.0f);
 
 	// Iterate, building more of the tree in each iteration
+	vector<float> curr = trunk;
 	for(int i = 0; i != iterations; ++i)
 	{
 		// Create new vector for this iteration's data
 		vector<float> new_vec;
 
 		// Modify past iteration's data, adding to final buffer
-		for(vec_iter it = tree_iterations[i].begin(); it !=
-			tree_iterations[i].end(); it += 6)
+		for(vec_iter it = curr.begin(); it !=
+			curr.end(); it += 6)
 		{
 			// Create glm vectors for easier processing
 			vec3 p1(*it, *(it + 1), *(it + 2));
@@ -84,7 +82,7 @@ Tree::Tree(unsigned int iterations)
 			}
 		}
 
-		tree_iterations.push_back(new_vec);
+		curr = new_vec;
 	}
 
 	// Bind vertex buffer data

@@ -11,8 +11,8 @@ class Tree
 	GLuint vertex_buffer;
 	GLuint color_buffer;
 
-	// Iteration data
-	std::vector<std::vector<float>> tree_iterations;
+	// Vertex data
+	std::vector<float> vertex_buffer_data;
 
 	// Color data
 	std::vector<float> color_buffer_data;
