@@ -7,7 +7,7 @@ using std::endl;
 #include <GLFW/glfw3.h>
 
 #include <shader.hpp>
-#include <line.hpp>
+#include <tree.hpp>
 #include <camera.hpp>
 
 // Auxiliary setup functions
@@ -39,13 +39,16 @@ int main()
 	// Setup our camera
 	Camera camera(program_id, 45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 
-	// Simple line for testing, create and bind
-	Line line;
-	line.BindToVAO();
+	// Simple tree for testing, create and bind
+	Tree tree(10);
+	tree.BindToVAO();
 
 	do {
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Rotate camera
+		camera.rotate_origin();
 		
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
@@ -53,7 +56,7 @@ int main()
 			GL_FALSE, camera.get_transformation());
 
 		// Draw our current batch
-		glDrawArrays(GL_LINE_LOOP, 0, 1 * 3);
+		glDrawArrays(GL_LINES, 0, tree.get_lines() * 2);
 
 		// Swap buffers
 		glfwSwapBuffers(window);

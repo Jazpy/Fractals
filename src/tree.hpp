@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-class Line
+class Tree
 {
 	private:
 
@@ -11,18 +11,25 @@ class Line
 	GLuint vertex_buffer;
 	GLuint color_buffer;
 
-	// Vertex data
-	std::vector<float> vertex_buffer_data;
+	// Iteration data
+	std::vector<std::vector<float>> tree_iterations;
+
+	// Color data
 	std::vector<float> color_buffer_data;
 
 	// OpenGL VAO
 	GLuint vao_id;
 
+	// Count of all line segments in the tree
+	int lines = 0;
+
 	public:
 
-	Line();
-	~Line();
+	Tree(unsigned int iterations);
+	~Tree();
 
 	// Bind to the current VAO
 	void BindToVAO();
+
+	int get_lines() { return this->lines; }
 };
