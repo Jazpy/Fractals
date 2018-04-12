@@ -24,6 +24,7 @@ int main()
 	int iterations;
 	cout << "Number of iterations: ";
 	cin >> iterations;
+
 	// Initialize GLFW and GLEW
 	GLFWwindow *window;
 
