@@ -62,11 +62,6 @@ Tree::Tree(unsigned int iterations)
 			for(int j = 0; j != 6; ++j)
 				color_buffer_data.push_back((float)(rand()) / (float)(RAND_MAX));
 
-			// Create "branches", first we get the distance
-			// after splitting, since all branches will be
-			// half the size of the branch they come from
-			float length = distance(p1, p2);
-
 			// We'll create 3 branches
 			for(int j = 0; j != 3; ++j)
 			{

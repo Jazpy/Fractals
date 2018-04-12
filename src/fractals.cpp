@@ -1,7 +1,7 @@
 #include <iostream>
 
 using std::cout;	using std::cerr;
-using std::endl;
+using std::cin;		using std::endl;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,6 +20,10 @@ void Cleanup(GLuint &vao, GLuint &program_id);
 
 int main()
 {
+	// Get user input for iterations
+	int iterations;
+	cout << "Number of iterations: ";
+	cin >> iterations;
 	// Initialize GLFW and GLEW
 	GLFWwindow *window;
 
@@ -40,7 +44,7 @@ int main()
 	Camera camera(program_id, 45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 
 	// Simple tree for testing, create and bind
-	Tree tree(10);
+	Tree tree(iterations);
 	tree.BindToVAO();
 
 	do {
