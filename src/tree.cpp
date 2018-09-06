@@ -1,3 +1,5 @@
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <stdlib.h>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
