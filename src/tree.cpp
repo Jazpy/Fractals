@@ -15,112 +15,73 @@ typedef vector<float>::iterator vec_iter;
 // Fractal construction takes place in the constructor
 Tree::Tree(unsigned int iterations)
 {
-	// Create initial iteration data, this represents the
-	// tree's "trunk"
-	vector<float> trunk;
-	
-	// First point
-	trunk.push_back(0.0f);
-	trunk.push_back(0.0f);
-	trunk.push_back(0.0f);
-	// Second point
-	trunk.push_back(0.0f);
-	trunk.push_back(10.0f);
-	trunk.push_back(0.0f);
+  // Create initial iteration data, this represents the
+  // tree's "trunk"
+  vector<float> trunk;
 
-	// Iterate, building more of the tree in each iteration
-	vector<float> curr = trunk;
-	for(int i = 0; i != iterations; ++i)
-	{
-		// Create new vector for this iteration's data
-		vector<float> new_vec;
+  // Add initial points
+  Fractal::add_to_vec(trunk, vec3(0.0f,  0.0f, 0.0f));
+  Fractal::add_to_vec(trunk, vec3(0.0f, 10.0f, 0.0f));
 
-		// Modify past iteration's data, adding to final buffer
-		for(vec_iter it = curr.begin(); it !=
-			curr.end(); it += 6)
-		{
-			// Create glm vectors for easier processing
-			vec3 p1(*it, *(it + 1), *(it + 2));
-			vec3 p2(*(it + 3), *(it + 4), *(it + 5));
+  // Iterate, building more of the tree in each iteration
+  vector<float> curr = trunk;
+  for(int i = 0; i != iterations; ++i)
+  {
+    // Create new vector for this iteration's data
+    vector<float> new_vec;
 
-			// Split in half, midpoint formula
-			vec3 midpoint = p1 + p2;
-			midpoint = midpoint / 2.0f;
+    // Modify past iteration's data, adding to final buffer
+    for(vec_iter it = curr.begin(); it != curr.end(); it += 6)
+    {
+      // Create glm vectors for easier processing
+      vec3 p1(*it, *(it + 1), *(it + 2));
+      vec3 p2(*(it + 3), *(it + 4), *(it + 5));
 
-			// Add the split line to the final buffer
-			vertex_buffer_data.push_back(p1.x);
-			vertex_buffer_data.push_back(p1.y);
-			vertex_buffer_data.push_back(p1.z);
+      // Split in half, midpoint formula
+      vec3 midpoint = p1 + p2;
+      midpoint = midpoint / 2.0f;
 
-			vertex_buffer_data.push_back(midpoint.x);
-			vertex_buffer_data.push_back(midpoint.y);
-			vertex_buffer_data.push_back(midpoint.z);
+      // Add the split line to the final buffer
+      Fractal::add_to_vec(vertex_buffer_data, p1);
+      Fractal::add_to_vec(vertex_buffer_data, midpoint);
 
-			++this->lines;
+      // Random color values
+      for(int j = 0; j != 6; ++j)
+        color_buffer_data.push_back((float)(rand()) / (float)(RAND_MAX));
 
-			// Random color values
-			for(int j = 0; j != 6; ++j)
-				color_buffer_data.push_back((float)(rand()) / (float)(RAND_MAX));
+      ++this->lines;
 
-			// We'll create 3 branches
-			for(int j = 0; j != 3; ++j)
-			{
-				// Calculate perpendicular vector
-				vec3 original = midpoint - p1;
-				vec3 perp = glm::cross(original, vec3(0.0f, 0.0f, 1.0f));
+      // Calculate perpendicular vector
+      vec3 original = midpoint - p1;
+      vec3 perp = glm::cross(original, vec3(0.0f, 0.0f, 1.0f));
+      vec3 endpoint = rotate(p2 - midpoint, 45.0f, perp);
 
-				// Rotate our new branch
-				vec3 endpoint = rotate(p2 - midpoint, 45.0f, perp);
-				endpoint = rotate(endpoint, 400.0f * j, original);
+      // We'll create 3 branches
+      for(int j = 0; j != 3; ++j)
+      {
+        // Rotate our new branch
+        vec3 curr_endpoint = rotate(endpoint, 400.0f * j, original);
 
-				// Add to this iteration's vector
-				new_vec.push_back(midpoint.x);
-				new_vec.push_back(midpoint.y);
-				new_vec.push_back(midpoint.z);
+        // Add to this iteration's vector
+        Fractal::add_to_vec(new_vec, midpoint);
+        Fractal::add_to_vec(new_vec, midpoint + curr_endpoint);
+      }
+    }
 
-				new_vec.push_back(midpoint.x + endpoint.x);
-				new_vec.push_back(midpoint.y + endpoint.y);
-				new_vec.push_back(midpoint.z + endpoint.z);
-			}
-		}
+    curr = new_vec;
+  }
 
-		curr = new_vec;
-	}
+  // Bind vertex buffer data
+  glGenBuffers(1, &vertex_buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+  glBufferData(GL_ARRAY_BUFFER,
+    vertex_buffer_data.size() * sizeof(float),
+    &vertex_buffer_data[0], GL_STATIC_DRAW);
 
-	// Bind vertex buffer data
-	glGenBuffers(1, &vertex_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-	glBufferData(GL_ARRAY_BUFFER,
-		vertex_buffer_data.size() * sizeof(float),
-		&vertex_buffer_data[0], GL_STATIC_DRAW);
-
-	// Bind color buffer data
-	glGenBuffers(1, &color_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-	glBufferData(GL_ARRAY_BUFFER,
-		color_buffer_data.size() * sizeof(float),
-		&color_buffer_data[0], GL_STATIC_DRAW);
-}
-
-Tree::~Tree()
-{
-	// Cleanup VBO
-	glDeleteBuffers(1, &vertex_buffer);
-	glDeleteBuffers(1, &color_buffer);
-
-	// Cleanup attributes
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-}
-
-void Tree::BindToVAO()
-{
-	// Bind our VBOs
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+  // Bind color buffer data
+  glGenBuffers(1, &color_buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
+  glBufferData(GL_ARRAY_BUFFER,
+    color_buffer_data.size() * sizeof(float),
+    &color_buffer_data[0], GL_STATIC_DRAW);
 }

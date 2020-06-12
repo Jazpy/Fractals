@@ -5,30 +5,29 @@
 
 class Camera
 {
-	private:
+private:
+  // Handle for "MVP" uniform
+  GLuint matrix_id;
 
-	// Handle for "MVP" uniform
-	GLuint matrix_id;
+  // Camera matrices
+  glm::mat4 projection;
+  glm::mat4 view;
+  glm::mat4 model;
 
-	// Camera matrices
-	glm::mat4 projection;
-	glm::mat4 view;
-	glm::mat4 model;
+  // Model View Projection
+  glm::mat4 MVP;
 
-	// Model View Projection
-	glm::mat4 MVP;
+public:
+  Camera(GLuint program_id, float fov, float aspect_ratio,
+    float min_distance, float max_distance,
+    glm::vec3 position, glm::vec3 look_at);
 
-	public:
+  // Get MVP transformation
+  GLfloat *get_transformation();
 
-	Camera(GLuint program_id, float fov, float aspect_ratio,
-		float min_distance, float max_distance);
+  // Get handle
+  GLint get_handle();
 
-	// Get MVP transformation
-	GLfloat *get_transformation();
-
-	// Get handle
-	GLint get_handle();
-
-	// Rotate around the origin
-	void rotate_origin();
+  // Rotate around the origin
+  void rotate_origin();
 };
