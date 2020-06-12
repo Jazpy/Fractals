@@ -5,15 +5,9 @@
 #include <glm/geometric.hpp>
 #include <infinicube.hpp>
 
-#include <iostream>
-using std::cerr;
-using std::endl;
-
 using glm::vec3;
 using glm::vec4;
 using std::vector;
-
-typedef vector<float>::iterator vec_iter;
 
 // Fractal construction takes place in the constructor
 Infinicube::Infinicube(unsigned int iterations)
