@@ -4,7 +4,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <camera.hpp>
-#include <GLFW/glfw3.h>
 
 using glm::vec3;  using glm::mat4;
 using glm::quat;
@@ -36,13 +35,8 @@ Camera::Camera(GLuint program_id, float fov, float aspect_ratio,
   MVP  = projection * view * model; 
 }
 
-void Camera::rotate_origin()
+void Camera::rotate_origin(float delta_time)
 {
-  // Calculate delta time for smooth rotation
-  static double last_time = glfwGetTime();
-  double curr_time        = glfwGetTime();
-  float delta_time        = float(curr_time - last_time);
-
   // Get rotation for this frame
   float speed = 0.005f * delta_time;
 
@@ -54,8 +48,6 @@ void Camera::rotate_origin()
   // Rotate
   model *= rotation_matrix;
   MVP    = projection * view * model;
-
-  last_time = curr_time;
 }
 
 GLfloat *Camera::get_transformation()

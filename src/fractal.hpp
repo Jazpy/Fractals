@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <vector>
 
 class Fractal
@@ -20,8 +21,11 @@ protected:
   // OpenGL VAO
   GLuint vao_id;
 
-  // Count of all line segments in the tree
-  int lines = 0;
+  // Count of all elements (points, lines, polys) to render
+  int elements = 0;
+
+  // Points, lines, polys, etc.
+  GLenum mode;
 
 public:
   ~Fractal();
@@ -29,8 +33,13 @@ public:
   // Bind to the current VAO
   void BindToVAO();
 
-  int get_lines() { return this->lines; }
+  // Simple getters
+  int    get_elements()
+    { return this->elements; }
+  GLenum get_mode()
+    { return this->mode; }
 
   // Utility
   static void add_to_vec(std::vector<float> &vec, glm::vec3 p);
+  static void add_to_vec(std::vector<float> &vec, glm::vec4 p);
 };

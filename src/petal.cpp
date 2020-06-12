@@ -6,7 +6,6 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/geometric.hpp>
 #include <petal.hpp>
-#include <iostream>
 
 using glm::vec3;
 using std::vector;
@@ -14,8 +13,11 @@ using std::vector;
 typedef vector<float>::iterator vec_iter;
 
 // Fractal construction takes place in the constructor
-Petal::Petal(unsigned int iterations, float angle)
+Petal::Petal(unsigned int iterations)
 {
+  // Petal will render as lines
+  this->mode = GL_LINES;
+
   // Create initial iteration data, this represents the
   // petal's first line
   vector<float> root;
@@ -23,21 +25,18 @@ Petal::Petal(unsigned int iterations, float angle)
   // Add initial points
   Fractal::add_to_vec(root, vec3(0.0f,  0.0f, 0.0f));
   Fractal::add_to_vec(root, vec3(0.0f, 10.0f, 0.0f));
-  ++this->lines;
+  this->elements += 2;
 
-  // Iterate, building more of the petal in each iteration
   vector<float> curr = root;
   for(int i = 0; i != iterations; ++i)
   {
-    // Create new vector for this iteration's data
     vector<float> new_vec;
 
     // Modify past iteration's data
-    for(vec_iter it = curr.begin(); it != curr.end(); it += 6)
+    for(vec_iter it = curr.begin(); it != curr.end(); it += 8)
     {
-      // Create glm vectors for easier processing
       vec3 p1(*it,       *(it + 1), *(it + 2));
-      vec3 p2(*(it + 3), *(it + 4), *(it + 5));
+      vec3 p2(*(it + 4), *(it + 5), *(it + 6));
       vec3 original = p2 - p1;
 
       // Segment line in fourths
@@ -75,7 +74,7 @@ Petal::Petal(unsigned int iterations, float angle)
       Fractal::add_to_vec(new_vec, endpoint_ar);
       Fractal::add_to_vec(new_vec, p1);
 
-      this->lines += 8;
+      this->elements += 16;
     }
 
     new_vec.swap(curr);
@@ -87,7 +86,6 @@ Petal::Petal(unsigned int iterations, float angle)
   // Push RED for all vertices
   for(int i = 0; i != vertex_buffer_data.size(); ++i)
     color_buffer_data.push_back((float)(rand()) / (float)(RAND_MAX));
-    //color_buffer_data.push_back(1.0);
 
   // Bind vertex buffer data
   glGenBuffers(1, &vertex_buffer);

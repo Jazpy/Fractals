@@ -10,6 +10,7 @@ using std::cin;   using std::endl;
 #include <shader.hpp>
 #include <tree.hpp>
 #include <petal.hpp>
+#include <infinicube.hpp>
 #include <camera.hpp>
 
 // Auxiliary setup functions
@@ -48,15 +49,22 @@ int main()
     glm::vec3(0.0f, 5.0f, 15.0f), glm::vec3(0.0f, 5.0f, 0.0f));
 
   // Build desired fractal
-  Petal fractal(iterations, 0.0f);
+  Infinicube fractal(iterations);
   fractal.BindToVAO();
 
+  // Used for delta time
+  double last_time = glfwGetTime();
   do {
+    // Get delta time
+    double curr_time  = glfwGetTime();
+    float  delta_time = float(curr_time - last_time);
+    last_time = curr_time;
+
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Rotate camera
-    camera.rotate_origin();
+    camera.rotate_origin(delta_time);
 
     // Send our transformation to the currently bound shader,
     // in the "MVP" uniform
@@ -64,12 +72,11 @@ int main()
       GL_FALSE, camera.get_transformation());
 
     // Draw our current batch
-    glDrawArrays(GL_LINES, 0, fractal.get_lines() * 2);
+    glDrawArrays(fractal.get_mode(), 0, fractal.get_elements());
 
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
-
   // Check if the ESC key was pressed or the window was closed
   } while(glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
     glfwWindowShouldClose(window) == 0);
@@ -135,6 +142,10 @@ void GLSetup(GLuint &vao, GLuint &program_id)
 
   // Enable culling
   glEnable(GL_CULL_FACE);
+
+  // Enable alpha blending
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Generate and bind our VAO
   glGenVertexArrays(1, &vao);

@@ -29,5 +29,5 @@ public:
   GLint get_handle();
 
   // Rotate around the origin
-  void rotate_origin();
+  void rotate_origin(float delta_time);
 };

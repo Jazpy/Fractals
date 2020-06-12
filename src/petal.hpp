@@ -5,5 +5,5 @@
 class Petal : public Fractal
 {
 public:
-  Petal(unsigned int iterations, float angle);
+  Petal(unsigned int iterations);
 };

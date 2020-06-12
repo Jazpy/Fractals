@@ -1,21 +1,21 @@
 #version 330 core
 
 // Input vertex data, different for all executions of this shader.
-layout(location = 0) in vec3 vertex_position_modelspace;
-layout(location = 1) in vec3 vertex_color;
+layout(location = 0) in vec4 vertex_position_modelspace;
+layout(location = 1) in vec4 vertex_color;
 
 // Output data ; will be interpolated for each fragment.
-out vec3 fragment_color;
+out vec4 fragment_color;
 // Values that stay constant for the whole mesh.
 uniform mat4 MVP;
 
-void main(){	
+void main(){
 
-	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  MVP * vec4(vertex_position_modelspace, 1);
+  // Output position of the vertex, in clip space : MVP * position
+  gl_Position =  MVP * vertex_position_modelspace;
 
-	// The color of each vertex will be interpolated
-	// to produce the color of each fragment
-	fragment_color = vertex_color;
+  // The color of each vertex will be interpolated
+  // to produce the color of each fragment
+  fragment_color = vertex_color;
 }
 

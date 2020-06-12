@@ -15,6 +15,9 @@ typedef vector<float>::iterator vec_iter;
 // Fractal construction takes place in the constructor
 Tree::Tree(unsigned int iterations)
 {
+  // Tree will render as lines
+  this->mode = GL_LINES;
+
   // Create initial iteration data, this represents the
   // tree's "trunk"
   vector<float> trunk;
@@ -31,11 +34,11 @@ Tree::Tree(unsigned int iterations)
     vector<float> new_vec;
 
     // Modify past iteration's data, adding to final buffer
-    for(vec_iter it = curr.begin(); it != curr.end(); it += 6)
+    for(vec_iter it = curr.begin(); it != curr.end(); it += 8)
     {
       // Create glm vectors for easier processing
-      vec3 p1(*it, *(it + 1), *(it + 2));
-      vec3 p2(*(it + 3), *(it + 4), *(it + 5));
+      vec3 p1(*it,       *(it + 1), *(it + 2));
+      vec3 p2(*(it + 4), *(it + 5), *(it + 6));
 
       // Split in half, midpoint formula
       vec3 midpoint = p1 + p2;
@@ -49,7 +52,7 @@ Tree::Tree(unsigned int iterations)
       for(int j = 0; j != 6; ++j)
         color_buffer_data.push_back((float)(rand()) / (float)(RAND_MAX));
 
-      ++this->lines;
+      ++this->elements;
 
       // Calculate perpendicular vector
       vec3 original = midpoint - p1;

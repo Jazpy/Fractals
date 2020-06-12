@@ -16,12 +16,18 @@ add_executable(fractals
   src/shader.hpp
   src/fractal.hpp
   src/fractal.cpp
+  src/shape.hpp
+  src/shape.cpp
   src/tree.cpp
   src/tree.hpp
   src/petal.hpp
   src/petal.cpp
+  src/infinicube.cpp
+  src/infinicube.hpp
   src/camera.cpp
   src/camera.hpp
+  src/cube.cpp
+  src/cube.hpp
   )
 
 target_link_libraries(fractals glfw ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
