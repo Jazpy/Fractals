@@ -22,22 +22,24 @@ public:
     { return vertex_data; }
   std::vector<glm::vec4> const &get_color_data()
     { return color_data; }
+  glm::vec4 get_center()
+    { return center; }
 
   // Add polygon to shape
   void add_poly(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3,
     glm::vec4 c1, glm::vec4 c2, glm::vec4 c3);
 
   // Translate all to new center
-  void translate_absolute(glm::vec4 p);
+  virtual void translate_absolute(glm::vec4 p);
   // Translate all along direction
-  void translate_relative(glm::vec3 d);
+  virtual void translate_relative(glm::vec3 d);
   // Shift center without affecting polygons
   void shift_center(glm::vec4 p)
-    { this->center = p; }
+    { center = p; }
 
   // Rotate around axis and point
-  void rotate_point(glm::vec3 axis, float angle, glm::vec4 p);
+  virtual void rotate_point(glm::vec3 axis, float angle, glm::vec4 p);
   // Rotate around axis and center
   void rotate_center(glm::vec3 axis, float angle)
-    { rotate_point(axis, angle, this->center); }
+    { rotate_point(axis, angle, center); }
 };
