@@ -1,7 +1,7 @@
 #pragma once
 
-#include <fractal.hpp>
-#include <cube.hpp>
+#include <fractals/fractal.hpp>
+#include <shapes/cube.hpp>
 
 class Infinicube : public Fractal
 {

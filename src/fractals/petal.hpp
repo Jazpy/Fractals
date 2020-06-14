@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fractal.hpp>
+#include <fractals/fractal.hpp>
 
 class Petal : public Fractal
 {

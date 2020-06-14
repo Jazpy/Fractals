@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/geometric.hpp>
-#include <infinicube.hpp>
+#include <fractals/infinicube.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -20,16 +20,17 @@ Infinicube::Infinicube(unsigned int iterations)
   // Add initial cube
   cubes.push_back(Cube(vec4(0.0f, 5.0f, 0.0f, 0.0f), 5.0f));
 
-  // Iterate, building more cubes in each iteration
-  vector<Cube> curr = cubes;
-  for(int i = 0; i != iterations; ++i)
-  {
-    // Create a new vector for this iteration's data
-    vector<Cube> new_vec;
+  // Range of base cubes to compute next iteration (only initial cube for now)
+  size_t range_start = 0;
+  size_t range_end   = 1;
 
-    for(Cube &cube : curr)
+  // Iterate, building more cubes in each iteration
+  for(unsigned int i = 0; i != iterations; ++i)
+  {
+    for(size_t index = range_start; index != range_end; ++index)
     {
       // Get cube's corners, center, and side length
+      Cube cube = cubes[index];
       vector<vec4> new_origins = cube.get_corners();
       new_origins.push_back(cube.get_center());
 
@@ -37,15 +38,16 @@ Infinicube::Infinicube(unsigned int iterations)
 
       // Add smaller cube at all new origins
       for(vec4 &c : new_origins)
-        new_vec.push_back(Cube(c, new_length));
+        cubes.push_back(Cube(c, new_length));
     }
 
-    cubes.insert(cubes.end(), new_vec.begin(), new_vec.end());
-    curr = new_vec;
+    // Update ranges for next iteration
+    range_start = range_end;
+    range_end   = cubes.size();
   }
 
   // Add to final vertex and color buffers
-  for(Cube cube : cubes)
+  for(Cube &cube : cubes)
   {
     for(vec4 v_data : cube.get_vertex_data())
       Fractal::add_to_vec(vertex_buffer_data, v_data);

@@ -1,25 +1,25 @@
 #pragma once
 
-#include <shape.hpp>
+#include <shapes/shape.hpp>
 
-class Cube : public Shape
+class Pyramid : public Shape
 {
 private:
-  // (Unique) corners of the cube
+  // (Unique) vertices of the pyramid
   std::vector<glm::vec4> corners;
   void update_corners();
 
-  // Side length
-  float length;
+  // Pyramid height
+  float height;
 
 public:
-  Cube(glm::vec4 center, float length);
+  Pyramid(glm::vec4 center, float height);
 
   // Getters
   std::vector<glm::vec4> &get_corners()
     { return corners; }
-  float get_length()
-    { return length; }
+  float get_height()
+    { return height; }
 
   // Overrides for translation, rotation, scaling, etc
   void translate_absolute(glm::vec4 p) override;

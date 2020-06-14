@@ -1,4 +1,4 @@
-#include <fractal.hpp>
+#include <fractals/fractal.hpp>
 
 using std::vector;
 using glm::vec3;

@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/geometric.hpp>
-#include <shape.hpp>
+#include <shapes/shape.hpp>
 
 using glm::vec3;
 using glm::vec4;

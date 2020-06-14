@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <cube.hpp>
+#include <shapes/cube.hpp>
 
 using glm::vec4;
 using glm::vec3;

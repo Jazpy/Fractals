@@ -8,9 +8,10 @@ using std::cin;   using std::endl;
 #include <glm/glm.hpp>
 
 #include <shader.hpp>
-#include <tree.hpp>
-#include <petal.hpp>
-#include <infinicube.hpp>
+#include <fractals/tree.hpp>
+#include <fractals/petal.hpp>
+#include <fractals/infinicube.hpp>
+#include <fractals/sierpinski.hpp>
 #include <camera.hpp>
 
 // Auxiliary setup functions
@@ -51,6 +52,7 @@ int main()
   // Build desired fractal
   Infinicube fractal(iterations);
   fractal.BindToVAO();
+  return 0;
 
   // Used for delta time
   double last_time = glfwGetTime();

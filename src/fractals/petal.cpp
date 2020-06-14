@@ -5,7 +5,7 @@
 #include <glm/vec3.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/geometric.hpp>
-#include <petal.hpp>
+#include <fractals/petal.hpp>
 
 using glm::vec3;
 using std::vector;
