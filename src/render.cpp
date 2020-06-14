@@ -1,7 +1,10 @@
 #include <iostream>
+#include <memory>
 
-using std::cout;  using std::cerr;
-using std::cin;   using std::endl;
+using std::cout;       using std::cerr;
+using std::cin;        using std::endl;
+using std::string;
+using std::unique_ptr; using std::make_unique;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,18 +17,48 @@ using std::cin;   using std::endl;
 #include <fractals/sierpinski.hpp>
 #include <camera.hpp>
 
+// Available fractals and shaders
+enum Fractals_e {
+  tree, petal, infinicube, sierpinski
+};
+
+enum Shaders_e {
+  simple, flat
+};
+
 // Auxiliary setup functions
 void GLFWSetup(GLFWwindow **window);
 void GLEWSetup();
-void GLSetup(GLuint &vao, GLuint &program_id);
+void GLSetup(GLuint &vao, GLuint &program_id, unsigned int shader);
 
 // Auxiliary cleanup function
 void Cleanup(GLuint &vao, GLuint &program_id);
 
 int main()
 {
-  // Get user input for iterations
-  int iterations;
+  // Get user input
+  unsigned int fractal_op;
+  unsigned int shader_op;
+  unsigned int iterations;
+
+  // Simple menu with fractal options
+  cout << "\nAvailable Fractals:\n";
+  cout << "\tTree       - 0\n";
+  cout << "\tPetal      - 1\n";
+  cout << "\tInfinicube - 2\n";
+  cout << "\tSierpinski - 3\n";
+
+  cout << "\nFractal to render: ";
+  cin >> fractal_op;
+
+  // Simple menu with shader options
+  cout << "\nAvailable Shaders:\n";
+  cout << "\tSimple     - 0\n";
+  cout << "\tFlat       - 1\n";
+
+  cout << "\nShader to use: ";
+  cin >> shader_op;
+
   cout << "Number of iterations: ";
   cin >> iterations;
 
@@ -43,42 +76,52 @@ int main()
   // Setup OpenGL, includes binding VAO and loading shaders
   GLuint vertex_array_id;
   GLuint program_id;
-  GLSetup(vertex_array_id, program_id);
+  GLSetup(vertex_array_id, program_id, shader_op);
 
-  // Setup our camera
+  // Set up our camera
   Camera camera(program_id, 45.0f, 16.0f / 9.0f, 0.1f, 1000.0f,
     glm::vec3(0.0f, 5.0f, 15.0f), glm::vec3(0.0f, 5.0f, 0.0f));
 
   // Build desired fractal
-  Infinicube fractal(iterations);
-  fractal.BindToVAO();
-  return 0;
+  unique_ptr<Fractal> fractal;
+  switch(fractal_op)
+  {
+  case tree:
+    fractal = make_unique<Tree>(iterations);
+    break;
+  case petal:
+    fractal = make_unique<Petal>(iterations);
+    break;
+  case infinicube:
+    fractal = make_unique<Infinicube>(iterations);
+    break;
+  case sierpinski:
+    fractal = make_unique<Sierpinski>(iterations);
+    break;
+  default:
+    fractal = make_unique<Tree>(iterations);
+  }
+  fractal->BindToVAO();
 
-  // Used for delta time
+  // Begin rendering loop
   double last_time = glfwGetTime();
   do {
     // Get delta time
     double curr_time  = glfwGetTime();
     float  delta_time = float(curr_time - last_time);
-    last_time = curr_time;
-
-    // Clear the screen
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Rotate camera
     camera.rotate_origin(delta_time);
 
-    // Send our transformation to the currently bound shader,
-    // in the "MVP" uniform
-    glUniformMatrix4fv(camera.get_handle(), 1,
-      GL_FALSE, camera.get_transformation());
-
     // Draw our current batch
-    glDrawArrays(fractal.get_mode(), 0, fractal.get_elements());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDrawArrays(fractal->get_mode(), 0, fractal->get_elements());
 
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    last_time = curr_time;
   // Check if the ESC key was pressed or the window was closed
   } while(glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
     glfwWindowShouldClose(window) == 0);
@@ -135,7 +178,7 @@ void GLEWSetup()
   }
 }
 
-void GLSetup(GLuint &vao, GLuint &program_id)
+void GLSetup(GLuint &vao, GLuint &program_id, unsigned int shader)
 {
   // Enable depth test, accept if fragment is closer to camera
   // than the former one
@@ -154,8 +197,30 @@ void GLSetup(GLuint &vao, GLuint &program_id)
   glBindVertexArray(vao);
 
   // Create and compile our GLSL program from the shaders
-  program_id = LoadShaders("../assets/shaders/transform.vshader",
-    "../assets/shaders/color.fshader");
+  string vert_src;
+  string geom_src;
+  string frag_src;
+  switch(shader)
+  {
+  case simple:
+    vert_src = "../assets/shaders/simple/fractals.vert";
+    frag_src = "../assets/shaders/simple/fractals.frag";
+    break;
+  case flat:
+    vert_src = "../assets/shaders/flat/fractals.vert";
+    geom_src = "../assets/shaders/flat/fractals.geom";
+    frag_src = "../assets/shaders/flat/fractals.frag";
+    break;
+  default:
+    vert_src = "../assets/shaders/simple/fractals.vert";
+    frag_src = "../assets/shaders/simple/fractals.frag";
+  }
+
+  program_id = LoadShaders(
+    vert_src,
+    geom_src,
+    frag_src
+  );
 
   // Use our shader
   glUseProgram(program_id);

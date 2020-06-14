@@ -23,8 +23,8 @@ Tree::Tree(unsigned int iterations)
   vector<float> trunk;
 
   // Add initial points
-  Fractal::add_to_vec(trunk, vec3(0.0f,  0.0f, 0.0f));
-  Fractal::add_to_vec(trunk, vec3(0.0f, 10.0f, 0.0f));
+  Fractal::add_to_vec(trunk, vec3(0.0f, -1.0f, 0.0f));
+  Fractal::add_to_vec(trunk, vec3(0.0f, 12.0f, 0.0f));
 
   // Iterate, building more of the tree in each iteration
   vector<float> curr = trunk;

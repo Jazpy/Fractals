@@ -5,7 +5,7 @@ using glm::vec4;
 using glm::vec3;
 using std::vector;
 
-vec4 random_color()
+vec4 cube_random_color()
 {
   vec4 color = vec4(
     (float)(rand()) / (float)(RAND_MAX),
@@ -20,7 +20,7 @@ vec4 random_color()
 Cube::Cube(vec4 center, float length)
 {
   // Get a random color
-  vec4 color = random_color();
+  vec4 color = cube_random_color();
 
   // Get "radius"
   float         half_length = length / 2.0f;
